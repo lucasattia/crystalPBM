@@ -1,2 +1,2 @@
-# crystal_pbm
+# crystalPBM
 Population balance model for batch crystallization 
