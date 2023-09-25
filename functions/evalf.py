@@ -22,5 +22,5 @@ def evalf(x, t, p, u):
         dxdt
     """
     dndt = calc_dndt(x, p)
-    ddelC_dt = calc_ddelC_dt(x[0], p )
+    ddelC_dt = calc_ddelC_dt(x, p )
     return np.hstack([ddelC_dt, dndt])

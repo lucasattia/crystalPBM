@@ -25,10 +25,13 @@ def calc_dndt(x, params):
     #I'm curious how the accuracy of this compares to using an
     #analytical form for dG_dL and computing n*dG_dL + G*dn_dL
     G = growthrate(delC, L_list)
-    dGn_dL = np.gradient(G*n)/dL 
+    dGn_dL = np.gradient(G*n, edge_order=2)/dL 
     
-    B = birthrate(delC, L_list)
+    bin1 = np.zeros_like(n)
+    bin1[0] = 1
+    B = birthrate(delC, L_list)*bin1
     D = deathrate(delC, L_list)
-    dlogV_dt = params['dlogV_dt'] #assuming constant evaporation
+    # dlogV_dt = params['dlogV_dt'] #assuming constant evaporation
+    dlogV_dt = -np.log(params['E'])
     
-    return B - D*n - n*dlogV_dt - dGn_dL
+    return B - 0*D*n*L_list - 0*n*dlogV_dt - dGn_dL
