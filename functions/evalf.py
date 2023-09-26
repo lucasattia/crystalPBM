@@ -1,5 +1,5 @@
 from dndt import calc_dndt
-from placeholders import calc_ddelC_dt
+from dS_dt import calc_dS_dt
 import numpy as np
 
 
@@ -9,7 +9,7 @@ def evalf(x, t, p, u):
     
     Inputs:
         x: state vector. Contains supersaturation concentration followed by 
-        the population density discretized over a dimension L[delC, n(L_0), n(L_1), n(L_2),...]
+        the population density discretized over a dimension L[S, n(L_0), n(L_1), n(L_2),...]
         
         t: time. Not used, but expected by scipy odeint
         
@@ -21,6 +21,7 @@ def evalf(x, t, p, u):
     outputs:
         dxdt
     """
+    
     dndt = calc_dndt(x, p)
-    ddelC_dt = calc_ddelC_dt(x, p )
-    return np.hstack([ddelC_dt, dndt])
+    dS_dt = calc_dS_dt(x, p )
+    return np.hstack([dS_dt, dndt])

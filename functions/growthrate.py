@@ -1,4 +1,4 @@
-def crystal_growth(S, g, k_g): 
+def crystal_growth(S, params):
     """
     Description: Function that defines the crystal growth rate 
 
@@ -9,5 +9,7 @@ def crystal_growth(S, g, k_g):
     Outputs: 
         B: birth rate [m/s]
     """
+    k_g = params['k_g']
+    g = params['g']
     G = k_g * S**g
     return G
