@@ -34,4 +34,4 @@ def calc_dndt(x, params):
     # dlogV_dt = params['dlogV_dt'] #assuming constant evaporation
     dlogV_dt = -np.log(params['E'])
     
-    return B - 0*D*n*L_list - 0*n*dlogV_dt - dGn_dL
+    return B - D*n*L_list - n*dlogV_dt - dGn_dL
