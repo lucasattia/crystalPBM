@@ -47,11 +47,14 @@ def crystal_birth_breakage(n, params):
     
     #TODO: speed this up, slowest part I think
     L_list = params['L_list']
+    flag = params['Breakage']
     B = np.zeros_like(L_list)
     for i in range(len(L_list)):
         B[i] = np.trapz(b(L_list[i:])*a(L_list[i:])*n[i:], L_list[i:])
-        
-    return B
+    if flag == True: 
+        return B
+    else: 
+        return np.zeros_like(n)
 
 # def crystal_birth_breakage(n, L, L_list): 
 #     """

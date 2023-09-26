@@ -11,7 +11,11 @@ def crystal_death(n, params):
         D: death rate
     """
     L_list = params['L_list']
-    return a(L_list)*n
+    flag = params['Breakage']
+    if flag == True: 
+        return a(L_list)*n
+    else: 
+        return np.zeros_like(n)
 
 
 # def crystal_death(n, L): 
