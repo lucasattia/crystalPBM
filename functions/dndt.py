@@ -30,6 +30,6 @@ def calc_dndt(x, params):
     
     B = crystal_birth_nucleation(x, params) + crystal_birth_breakage(n,params)
     D = crystal_death(n, params)
-    dlogV_dt = -np.log(params['E']) #assuming constant evaporation
+    dlogV_dt = - params['E']/params['V'] #assuming constant evaporation
     
     return B - D - n*dlogV_dt - dGn_dL
