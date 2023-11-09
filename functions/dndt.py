@@ -18,7 +18,8 @@ def calc_dndt(x, params):
         dn/dt, array discretized over L
     """
     S = x[0] #unpack x vector
-    n = x[1:]
+    V = x[1]
+    n = x[2:]
 
     L_list = params['L_list']
     dL = L_list[1]-L_list[0] #assume L evenly spaced
@@ -30,6 +31,6 @@ def calc_dndt(x, params):
     
     B = crystal_birth_nucleation(x, params) + crystal_birth_breakage(n,params)
     D = crystal_death(n, params)
-    dlogV_dt = - params['E']/params['V'] #assuming constant evaporation
+    dlogV_dt = - params['E']/V #assuming constant evaporation
     
     return B - D - n*dlogV_dt - dGn_dL

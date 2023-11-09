@@ -15,7 +15,7 @@ def crystal_birth_nucleation(x, params):
     k_N = params['k_N']
     alpha = params['alpha']
     S = x[0]
-    n = x[1:]
+    n = x[2:]
     B = np.zeros_like(n)
     B[0] = 1
     

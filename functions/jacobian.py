@@ -1,7 +1,7 @@
 import numpy as np
 from evalf import evalf
 
-def calc_jac(x0, params, eps=1e-10):
+def calc_jac(x0, params, eps=1e-8):
     jac = np.zeros((x0.shape[0], x0.shape[0]))
     f0 = evalf(x0, None, params, None)
     
