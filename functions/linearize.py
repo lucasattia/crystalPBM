@@ -23,7 +23,7 @@ def eval_linearized_f(x, p, x0, p0, eps=1e-8):
     
     dxdt = f0 + jac@(x-x0)
     for k in p0.keys():
-        if k == ['L_list', 'Breakage']:
+        if k in ['L_list', 'Breakage']:
             continue
         dxdt += df_dp[k]*(p[k] - p0[k])
         
