@@ -8,11 +8,11 @@ from tqdm.notebook import tqdm
 
 
 
-def WENO5_calc(k_m, x0, delta_x, eps = 1.0e-40, p=2):
+def WENO5_calc(k_m, x0, delta_x, eps = 1.0e-40, power=2):
     """
     WENO 5th order integration scheme
     
-    Inputs:
+    Inpoweruts:
         x0: initial state vector. Contains supersaturation concentration, then volume, followed by 
         the population density discretized over a dimension L[S, V, n(L_0), n(L_1), n(L_2),...]
         
@@ -58,17 +58,17 @@ def WENO5_calc(k_m, x0, delta_x, eps = 1.0e-40, p=2):
     # (1) in smooth regions, weights converge converge to "ideal weights" γ_k as Δx → 0 in non-smooth regions
     # (2) in non-smooth regions (near discontinuities), weights remove contribution of stencils which contain the discontinuity
     # post-fixed with JS
-    alpha0m = gamma0 / (beta0m + eps)**p
-    alpha1m = gamma1 / (beta1m + eps)**p
-    alpha2m = gamma2 / (beta2m + eps)**p
+    alpha0m = gamma0 / (beta0m + eps)**power
+    alpha1m = gamma1 / (beta1m + eps)**power
+    alpha2m = gamma2 / (beta2m + eps)**power
     alpha_m = alpha0m + alpha1m + alpha2m
     alpha0m_JS = alpha0m / alpha_m
     alpha1m_JS = alpha1m / alpha_m
     alpha2m_JS = alpha2m / alpha_m
    
-    alpha0p = gamma0 / (beta0p + eps)**p
-    alpha1p = gamma1 / (beta1p + eps)**p
-    alpha2p = gamma2 / (beta2p + eps)**p
+    alpha0p = gamma0 / (beta0p + eps)**power
+    alpha1p = gamma1 / (beta1p + eps)**power
+    alpha2p = gamma2 / (beta2p + eps)**power
     alpha_p = alpha0p + alpha1p + alpha2p
     alpha0p_JS = alpha0p / alpha_p
     alpha1p_JS = alpha1p / alpha_p
@@ -137,16 +137,48 @@ def Runge_kutta(k_m,x,delta_t,delta_x):
             x_new: new state vector computed at each time step
             
     """
-    x_prev = x
+   
     
-    WENO_soln0 = WENO5_calc(k_m, x_prev, delta_x, eps = 1.0e-40, p=2)
-    x_star = x_prev + delta_t *WENO_soln0
+    WENO_soln0 = WENO5_calc(k_m, x, delta_x, eps = 1.0e-40, power=2)
+    x_star = x + delta_t *WENO_soln0
     
-    WENO_soln1 = WENO5_calc(k_m, x_star, delta_x, eps = 1.0e-40, p=2)
-    x_star_star = (3/4)*x_prev +(1/4)*x_star +(1/4)*delta_t *WENO_soln1
+    WENO_soln1 = WENO5_calc(k_m, x_star, delta_x, eps = 1.0e-40, power=2)
+    x_star_star = (3/4)*x +(1/4)*x_star +(1/4)*delta_t *WENO_soln1
     
-    WENO_soln2 = WENO5_calc(k_m, x_star_star, delta_x, eps = 1.0e-40, p=2)
-    x_new = (1/3)*x_prev +(2/3)*x_star +(2/3)*delta_t *WENO_soln2
+    WENO_soln2 = WENO5_calc(k_m, x_star_star, delta_x, eps = 1.0e-40, power=2)
+    x_new = (1/3)*x +(2/3)*x_star +(2/3)*delta_t *WENO_soln2
     
     return x_new
+def time_int_main_calc (x0,k_m,delta_x, t_vec, p):
     
+    """
+    Time integration method with WENO fifth order integration and 3rd order Runge Kutta method
+    
+    Inputs:
+        x0: initial state vector. Contains supersaturation concentration, then volume, followed by 
+        the population density discretized over a dimension L[S, V, n(L_0), n(L_1), n(L_2),...]
+        k_m:
+        delta_x: discrete spatial step
+        t_vec: time vector
+        
+        p: dictionary of parameters, e.g. L_List ( L values we discretized over -- assume evenly spaced),
+        evaporation rate, primary nucleation constant,...
+        
+        
+    outputs:
+        x_vec: state vector computed at each time step
+    
+    
+    """
+    x_vec = np.zeros((len(t_vec), len(x0)))
+    x_prev = x0
+    
+    delta_t = (t_vec[1] - t_vec[0])/2
+    for i in tqdm(range(len(t_vec))):
+        # f = evalf(x_prev, t = None, p = p, u = None)
+        x_vec[i] = Runge_kutta(k_m,x_prev,delta_t,delta_x)
+        x_prev = x_vec[i]
+    
+    
+    
+    return x_vec
