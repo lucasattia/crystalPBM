@@ -37,7 +37,7 @@ def Nc(x, params):
     delC = x[0]
     n = x[1:]
 
-    g = growthrate(delC, L_list)  # Call G function developed separately
+    g = growthrate(delC, L_list)  # Call growthrate function
 
     result = np.trapz(3*L_list**2*g*n,L_list)
 
