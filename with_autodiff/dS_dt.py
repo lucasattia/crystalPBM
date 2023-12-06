@@ -1,0 +1,28 @@
+from growthrate import crystal_growth
+# import numpy as np
+import jax.numpy as np
+
+
+def calc_dS_dt(x, params):
+    S = x[0]
+    V = x[1]
+    E = params['E']
+    V = V
+
+    return  (E/V)*S - V*Nc(x, params)
+
+def Nc(x, params):
+    rho = params['rho']
+    k_v = params['k_v']
+    L_list = params['L_list']
+
+    S = x[0]
+    n = x[2:]
+
+    g = crystal_growth(S, params)  # Call G function developed separately
+
+    result = np.trapz(3*L_list**2*g*n,L_list)
+
+    result = result*rho*k_v
+    
+    return result
