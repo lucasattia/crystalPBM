@@ -25,6 +25,7 @@ def evalf(x, p):
     """
     
     dndt = calc_dndt(x, p)
+    print("We are in evalf")
     dS_dt = calc_dS_dt(x, p)
     dV_dt = -p['E']
     return np.hstack([dS_dt, dV_dt, dndt])
