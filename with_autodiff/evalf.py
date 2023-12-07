@@ -2,9 +2,9 @@ from dndt import calc_dndt
 from dS_dt import calc_dS_dt
 # import numpy as np
 import jax.numpy as np
+from jax import jit
 
-
-
+@jit
 def evalf(x, p):
     """
     forward pass of the time evolution
