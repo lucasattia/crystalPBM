@@ -15,7 +15,7 @@ def rk_loop(x, dt, p):
     return x + (dt/6.0)*(x_k1 + 2*x_k2 + 2*x_k3 + x_k4),
 
 
-def trapezoidal(x0, t_vec, p, eps_dyn):
+def trapezoidal(x0, t_vec, p):
     """
     trapezoidal time integration
     

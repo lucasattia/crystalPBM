@@ -1,5 +1,5 @@
-# import numpy as np
-import jax.numpy as np
+import numpy as np
+# import jax.numpy as np
 
 from growthrate import crystal_growth
 from deathrate import crystal_death
@@ -32,7 +32,7 @@ def calc_dndt(x, params):
     k_m =1
     delta_x=dL
     # if params['weno']:
-    dGn_dL =WENO5_calc(k_m, x, delta_x, eps = 1.0e-40, power=2)
+    dGn_dL =WENO5_calc(k_m, G*n, delta_x, eps = 1.0e-40, power=2)
     
     # else:
     # dGn_dL = np.gradient(G*n)/dL 
@@ -42,4 +42,10 @@ def calc_dndt(x, params):
     D = crystal_death(n, params)
     dlogV_dt = - params['E']/V #assuming constant evaporation
     print(" We are in dndt")
-    return B - D - n*dlogV_dt - dGn_dL
+    print("size of B", np.shape(B))
+    print("size of D", np.shape(D))
+    print("size of n", np.shape(n))
+    print("size of dlogV_dt", np.shape(dlogV_dt))
+    print("size of dGn_dL", np.shape(dGn_dL))
+    val = B - D - n*dlogV_dt - dGn_dL
+    return val

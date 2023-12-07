@@ -41,7 +41,7 @@ def expand_params(p):
 
 def rk_integrate(x0, t_vec, p):
     """
-    trapezoidal time integration
+   
     
     Inputs:
         x0: initial state vector. Contains supersaturation concentration, then volume, followed by 

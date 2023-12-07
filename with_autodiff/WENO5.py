@@ -1,9 +1,9 @@
 
 
-# import numpy as np
-import jax.numpy as np
+import numpy as np
+# import jax.numpy as np
 from tqdm.notebook import tqdm 
-from jax import jit
+# from jax import jit
 
 def six_pt_stensil(x0):
     x_m3 = x0[0:-5]
@@ -14,7 +14,7 @@ def six_pt_stensil(x0):
     x_p2 = x0[5:]
     
     return x_m3, x_m2, x_m1, x_0, x_p1, x_p2
-
+# @jit
 def WENO5_calc(k_m, x0, delta_x, eps = 1.0e-40, power=2):
     """
     WENO 5th order integration scheme
@@ -38,12 +38,33 @@ def WENO5_calc(k_m, x0, delta_x, eps = 1.0e-40, power=2):
    
     # 6-pt stencil biased in upwind direction = info from +2 nodes forward, -3 nodes backward
     len_x0=len(x0)
+    print("This is the size of x0", len_x0)
     first_num = x0[0]
     last_num = x0[len_x0-1]
     
-    x0 = np.insert(x0,0,np.array([first_num,first_num,first_num]) )
-    x0 = np.insert(x0,len_x0,np.array([last_num,last_num]) )
     
+    # first_nums= np.interp(np.array([0,1,2]),np.array([3,4,5]),x0[0:3])
+    # last_nums= np.interp(np.array([3,4]),np.array([0,1,2]),x0[-3:])
+    # poly_this = np.polyfit(np.array([8,4,6,8,9]), np.ones(5), deg=3)
+    print("Data type x0[0:8]",type(x0[0:8]))
+    print(x0[0:8])
+    print("Data type np.array([0,1,2,3,4,5,6,7])",type(np.array([0,1,2,3,4,5,6,7])))
+    # poly_first_nums = np.polyfit(np.ones(15)*np.array([0,1,2,3,4,5,6,7,8,9,10,11,12,13,14]), np.ones(15)*x0[0:15], deg=8)
+    # first_nums = np.polyval(poly_first_nums, np.ones(3)*np.array([-3,-2,-1]))
+    
+    
+    # poly_last_nums = np.polyfit(np.ones(15)*np.array([0,1,2,3,4,5,6,7,8,9,10,11,12,13,14]), np.ones(15)*x0[-15:], deg=8)
+    # last_nums = np.polyval(poly_last_nums,np.ones(2)* np.array([15,16]))
+    
+    
+    # first_nums = np.array(x0[0],x0[1],x0[2])
+    # last_nums = np.array(x0[len_x0],x0[-1:])
+    
+    # x0 = np.insert(x0,0,first_nums )
+    # x0 = np.insert(x0,len_x0,last_nums)
+    x0 = np.insert(x0,0,np.array([first_num,first_num,first_num]) )
+    len_x0=len(x0)
+    x0 = np.insert(x0,len_x0,np.array([last_num,last_num]))
     x_m3, x_m2, x_m1, x_0, x_p1, x_p2 = six_pt_stensil(x0)
    
     x_m3 = k_m * x_m3
@@ -123,6 +144,8 @@ def WENO5_calc(k_m, x0, delta_x, eps = 1.0e-40, power=2):
     hp_M = alpha0p_H*h_p0 + alpha1p_H*h_p1 + alpha2p_H*h_p2
     hm_M = alpha0m_H*h_m0 + alpha1m_H*h_m1 + alpha2m_H*h_m2
 
+    print("hp_M", hp_M)
+    print("hm_M", hm_M)
     return (hp_M - hm_M) / delta_x
    
     # less computationally expensive, output JS weighted flux term
