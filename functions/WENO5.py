@@ -1,19 +1,25 @@
 
-from dndt import calc_dndt
-from dS_dt import calc_dS_dt
+
 import numpy as np
-from evalf import evalf
 from tqdm.notebook import tqdm 
 
 
-
+def six_pt_stensil(x0):
+    x_m3 = x0[0:-5]
+    x_m2 = x0[1:-4]
+    x_m1 = x0[2:-3]
+    x_0  = x0[3:-2]
+    x_p1 = x0[4:-1]
+    x_p2 = x0[5:]
+    
+    return x_m3, x_m2, x_m1, x_0, x_p1, x_p2
 
 def WENO5_calc(k_m, x0, delta_x, eps = 1.0e-40, power=2):
     """
     WENO 5th order integration scheme
     
     Inpoweruts:
-        x0: initial state vector. Contains supersaturation concentration, then volume, followed by 
+        u0: initial state vector. Contains supersaturation concentration, then volume, followed by 
         the population density discretized over a dimension L[S, V, n(L_0), n(L_1), n(L_2),...]
         
         t_vec: time vector
@@ -24,13 +30,20 @@ def WENO5_calc(k_m, x0, delta_x, eps = 1.0e-40, power=2):
         eps_dyn: 
         
     outputs:
-        dx/dspatial: finite difference spatial derivative
+        du/dspatial: finite difference spatial derivative
     """
     # x_vec = np.zeros((len(t_vec), len(x0)))
     # x_prev = x0
    
     # 6-pt stencil biased in upwind direction = info from +2 nodes forward, -3 nodes backward
-    x_m3, x_m2, x_m1, x_0, x_p1, x_p2 = x0
+    len_x0=len(x0)
+    first_num = x0[0]
+    last_num = x0[len_x0-1]
+    
+    x0 = np.insert(x0,0,[first_num,first_num,first_num] )
+    x0 = np.insert(x0,len_x0,[last_num,last_num] )
+    
+    x_m3, x_m2, x_m1, x_0, x_p1, x_p2 = six_pt_stensil(x0)
    
     x_m3 = k_m * x_m3
     x_m2 = k_m * x_m2
@@ -109,7 +122,7 @@ def WENO5_calc(k_m, x0, delta_x, eps = 1.0e-40, power=2):
     hp_M = alpha0p_H*h_p0 + alpha1p_H*h_p1 + alpha2p_H*h_p2
     hm_M = alpha0m_H*h_m0 + alpha1m_H*h_m1 + alpha2m_H*h_m2
 
-    return -(hp_M - hm_M) / delta_x
+    return (hp_M - hm_M) / delta_x
    
     # less computationally expensive, output JS weighted flux term
     # however, convergence weakens to 3rd order for any ϵ outside of [1e-7,1e-5]
