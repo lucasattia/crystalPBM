@@ -37,7 +37,7 @@ def expand_params(p):
     return expanded_p
 
 
-def trapezoidal(x0, t_vec, p):
+def rk_integrator(x0, t_vec, p):
     """
     trapezoidal time integration
     
@@ -56,7 +56,7 @@ def trapezoidal(x0, t_vec, p):
         x_vec: state vector computed at each time step
     """
     
-    p = expand_params(p)
+    #p = expand_params(p)
     
     x_vec = np.zeros((len(t_vec), len(x0)))
     x_prev = x0

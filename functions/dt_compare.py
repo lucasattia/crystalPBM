@@ -15,12 +15,12 @@ def dt_compare(x0, dt, p, f, t_final):
         t_vec = np.arange(0,t_final,step)
 
         t0 = time.time()
-        x = euler(x0, t_vec, p)
+        x = f(x0, t_vec, p)
         t1 = time.time()
 
         t.append(t1-t0)
 
-        error.append(np.linalg.norm(x-x_ref))
+        error.append(np.linalg.norm(x-x_ref)/np.linalg.norm(x_ref))
 
     print('Errors for different time discretizations are:',error)
     print('Time taken for different time discretizations are:',time)

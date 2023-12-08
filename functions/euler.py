@@ -25,8 +25,8 @@ def euler(x0, t_vec, p):
 
     # assuming constant delta_t
     dt = (t_vec[1] - t_vec[0])/2
-    for i in tqdm(range(len(t_vec))):
-        f = evalf(x_prev, t = None, p = p, u = None)
-        x_vec[i] = x_prev + dt*evalf(x_prev, t = None, p = p, u = None)
+    for i in range(len(t_vec)):
+        f = evalf(x_prev, p = p)
+        x_vec[i] = x_prev + dt*evalf(x_prev, p = p)
         x_prev = x_vec[i]
     return x_vec
