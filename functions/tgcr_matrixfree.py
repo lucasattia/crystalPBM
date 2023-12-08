@@ -1,4 +1,9 @@
-import jax.numpy as np
+
+#%%
+
+# import jax.numpy as np
+import numpy as np
+
 
 
 def tgcr_MatrixFree(evalf, xf, pf, b, tolrGCR, MaxItersGCR, epsMF):
@@ -20,7 +25,7 @@ def tgcr_MatrixFree(evalf, xf, pf, b, tolrGCR, MaxItersGCR, epsMF):
     r = b
     r_norms = [np.linalg.norm(r)]
     
-    k = 0
+    k = -1
     p = []
     Ap = []
     while (r_norms[k]/r_norms[0] > tolrGCR) & (k <= MaxItersGCR):
@@ -69,3 +74,6 @@ def tgcr_MatrixFree(evalf, xf, pf, b, tolrGCR, MaxItersGCR, epsMF):
         # fprintf('||r||=%g i=%d\n', norms(k+1), k+1);
         
         return x, r_norms/r_norms[0]
+    
+
+# %%

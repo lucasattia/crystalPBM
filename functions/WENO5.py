@@ -38,7 +38,7 @@ def WENO5_calc(k_m, x0, delta_x, eps = 1.0e-40, power=2):
    
     # 6-pt stencil biased in upwind direction = info from +2 nodes forward, -3 nodes backward
     len_x0=len(x0)
-    print("This is the size of x0", len_x0)
+    # print("This is the size of x0", len_x0)
     first_num = x0[0]
     last_num = x0[len_x0-1]
     
@@ -46,9 +46,9 @@ def WENO5_calc(k_m, x0, delta_x, eps = 1.0e-40, power=2):
     # first_nums= np.interp(np.array([0,1,2]),np.array([3,4,5]),x0[0:3])
     # last_nums= np.interp(np.array([3,4]),np.array([0,1,2]),x0[-3:])
     # poly_this = np.polyfit(np.array([8,4,6,8,9]), np.ones(5), deg=3)
-    print("Data type x0[0:8]",type(x0[0:8]))
-    print(x0[0:8])
-    print("Data type np.array([0,1,2,3,4,5,6,7])",type(np.array([0,1,2,3,4,5,6,7])))
+    # print("Data type x0[0:8]",type(x0[0:8]))
+    # print(x0[0:8])
+    # print("Data type np.array([0,1,2,3,4,5,6,7])",type(np.array([0,1,2,3,4,5,6,7])))
     # poly_first_nums = np.polyfit(np.ones(15)*np.array([0,1,2,3,4,5,6,7,8,9,10,11,12,13,14]), np.ones(15)*x0[0:15], deg=8)
     # first_nums = np.polyval(poly_first_nums, np.ones(3)*np.array([-3,-2,-1]))
     
@@ -144,8 +144,8 @@ def WENO5_calc(k_m, x0, delta_x, eps = 1.0e-40, power=2):
     hp_M = alpha0p_H*h_p0 + alpha1p_H*h_p1 + alpha2p_H*h_p2
     hm_M = alpha0m_H*h_m0 + alpha1m_H*h_m1 + alpha2m_H*h_m2
 
-    print("hp_M", hp_M)
-    print("hm_M", hm_M)
+    # print("hp_M", hp_M)
+    # print("hm_M", hm_M)
     return (hp_M - hm_M) / delta_x
    
     # less computationally expensive, output JS weighted flux term
