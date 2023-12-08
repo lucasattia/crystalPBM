@@ -19,8 +19,8 @@ def dt_compare(x0, dt, p, f, t_final):
         t1 = time.time()
 
         t.append(t1-t0)
-
-        error.append(np.linalg.norm(x-x_ref)/np.linalg.norm(x_ref))
+        indices = np.linspace(0, len(x_ref) - 1, len(x)).astype(int)
+        error.append(np.linalg.norm(x-x_ref[indices])/np.linalg.norm(x_ref[indices]))
 
     print('Errors for different time discretizations are:',error)
     print('Time taken for different time discretizations are:',time)
