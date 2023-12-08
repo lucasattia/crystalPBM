@@ -15,10 +15,10 @@ def crystal_birth_nucleation(x, params):
     k_N = params['k_N']
     alpha = params['alpha']
     S = x[0]
-    n = x[2:]
-    B = np.zeros_like(n)
-    B[0] = 1
-    
+    # n = x[2:]
+    # B = np.zeros_like(n)
+    # B[0] = 1
+    B = params["B0"]
     return B* k_N * S**alpha
 
 # def crystal_birth_nucleation(S, alpha, k_N): 
@@ -46,15 +46,17 @@ def crystal_birth_breakage(n, params):
     """
     
     #TODO: speed this up, slowest part I think
-    L_list = params['L_list']
-    flag = params['Breakage']
-    B = np.zeros_like(L_list)
-    for i in range(len(L_list)):
-        B[i] = np.trapz(b(L_list[i:])*a(L_list[i:])*n[i:], L_list[i:])
-    if flag == True: 
-        return B
-    else: 
-        return np.zeros_like(n)
+    # L_list = params['L_list']
+    # flag = params['Breakage']
+    # B = np.zeros_like(L_list)
+    # for i in range(len(L_list)):
+    #     B[i] = np.trapz(b(L_list[i:])*a(L_list[i:])*n[i:], L_list[i:])
+    # if flag == True: 
+    #     return B
+    # else: 
+    #     return np.zeros_like(n)
+    B = np.trapz(params["a_L_matrix"]*n, dx=params["dL"])
+    return B
 
 # def crystal_birth_breakage(n, L, L_list): 
 #     """

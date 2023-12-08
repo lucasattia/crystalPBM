@@ -3,8 +3,9 @@ import numpy as np
 from growthrate import crystal_growth
 from deathrate import crystal_death
 from birthrate import crystal_birth_breakage, crystal_birth_nucleation
-
+from WENO5 import WENO5_calc
 def calc_dndt(x, params):
+    
     """
     Calculates dn/dt
     
@@ -27,8 +28,13 @@ def calc_dndt(x, params):
     #I'm curious how the accuracy of this compares to using an
     #analytical form for dG_dL and computing n*dG_dL + G*dn_dL
     G = crystal_growth(S, params)
-    dGn_dL = np.gradient(G*n, edge_order=2)/dL 
-    
+    # dGn_dL = np.gradient(G*n, edge_order=2)/dL 
+    k_m = 1
+    delta_x = dL
+    if params['weno']:
+        dGn_dL = WENO5_calc(k_m, G*n, delta_x, eps = 1.0e-40, power=2)
+    else: 
+        dGn_dL = np.gradient(G*n, edge_order=2)/dL 
     B = crystal_birth_nucleation(x, params) + crystal_birth_breakage(n,params)
     D = crystal_death(n, params)
     dlogV_dt = - params['E']/V #assuming constant evaporation

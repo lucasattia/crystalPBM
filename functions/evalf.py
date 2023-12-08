@@ -3,7 +3,7 @@ from dS_dt import calc_dS_dt
 import numpy as np
 
 
-def evalf(x, t, p, u):
+def evalf(x, p):
     """
     forward pass of the time evolution
     

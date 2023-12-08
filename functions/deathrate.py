@@ -1,5 +1,4 @@
 import numpy as np
-
 def crystal_death(n, params): 
     """
     Description: Function that defines the death rate due to breakage
@@ -10,13 +9,13 @@ def crystal_death(n, params):
     Outputs: 
         D: death rate
     """
-    L_list = params['L_list']
-    flag = params['Breakage']
-    if flag == True: 
-        return a(L_list)*n
-    else: 
-        return np.zeros_like(n)
-
+    # L_list = params['L_list']
+    # flag = params['Breakage']
+    # if flag == True: 
+        # return a(L_list)*n
+    return params["a_L_list"]*n
+    # else: 
+    #     return np.zeros_like(n)
 
 # def crystal_death(n, L): 
 #     """
@@ -39,9 +38,9 @@ def a(L_list):
     Outputs: 
         a: probability
     """
-    a = (6/5)*((L_list**3)/3 + (L_list**2)/2)
-    a[L_list < 0] = 0
-    a[L_list > 1] = 0
+    # a = (6/5)*((L_list**3)/3 + (L_list**2)/2)
+    # a[L_list < 0] = 0
+    # a[L_list > 1] = 0
     
     return (6/5)*((L_list**3)/3 + (L_list**2)/2)
 
