@@ -35,7 +35,7 @@ def tgcr_MatrixFree(evalf, xf, pf, b, tolrGCR, MaxItersGCR, epsMF):
         p.append(r)
         
         #  The following three lines are an approximation for Ap(:, k) = A * p(:,k);
-        epsilon = 1e-4
+        epsilon = 1e-8
         fepsMF  = evalf(xf+epsilon*p[k],pf)
         f       = evalf(xf,pf)
         Ap.append((fepsMF - f ) / epsilon)
@@ -72,6 +72,11 @@ def tgcr_MatrixFree(evalf, xf, pf, b, tolrGCR, MaxItersGCR, epsMF):
 
         # Print the norm during the iteration
         # fprintf('||r||=%g i=%d\n', norms(k+1), k+1);
+        
+        if r_norms[k+1] > (tolrGCR * r_norms[1]):
+            print('GCR did NOT converge! Maximum Number of Iterations reached\n')
+        else:
+            print("GCR converged")
         
         return x, r_norms/r_norms[0]
     
