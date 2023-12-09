@@ -13,7 +13,6 @@ def tgcr_MatrixFree(evalf, xf, pf, b, tolrGCR, MaxItersGCR, epsMF):
     eval_f     : name of the function that evaluates f(xf,pf,uf)
     xf         : state vector where to evaluate the Jacobian [df/dx]
     pf         : structure containing parameters used by eval_f
-    uf         : input needed by eval_f
     b          : right hand side of the linear system to be solved
     tolrGCR    : convergence tolerance, terminate on norm(b - Ax) / norm(b) < tolrGCR
     MaxItersGCR: maximum number of iterations before giving up
@@ -25,17 +24,16 @@ def tgcr_MatrixFree(evalf, xf, pf, b, tolrGCR, MaxItersGCR, epsMF):
     r = b
     r_norms = [np.linalg.norm(r)]
     
-    k = -1
+    k = 0
     p = []
     Ap = []
-    while (r_norms[k]/r_norms[0] > tolrGCR) & (k <= MaxItersGCR):
-        k = k + 1
+    while (r_norms[k]/r_norms[0] > tolrGCR) & (k < MaxItersGCR):
         # Use the residual as the first guess for the ne search direction 
         # and computer its image
         p.append(r)
         
         #  The following three lines are an approximation for Ap(:, k) = A * p(:,k);
-        epsilon = 1e-8
+        epsilon = 2*epsMF*np.sqrt(1+np.linalg.norm(xf,np.inf))/np.linalg.norm(p[k],np.inf)
         fepsMF  = evalf(xf+epsilon*p[k],pf)
         f       = evalf(xf,pf)
         Ap.append((fepsMF - f ) / epsilon)
@@ -47,8 +45,8 @@ def tgcr_MatrixFree(evalf, xf, pf, b, tolrGCR, MaxItersGCR, epsMF):
         # however if you need relative accuracy better than  1e-10
         # it might be safer to keep full orthogonalization even for symmetric A
         if k >0:
-            for j in range(1,k-1):
-                beta = Ap[k].T * Ap[j]
+            for j in range(0,k):
+                beta = Ap[k].T @ Ap[j]
                 p[k]  =  p[k] - beta * p[j]
                 Ap[k] = Ap[k] - beta * Ap[j]
 
@@ -61,7 +59,7 @@ def tgcr_MatrixFree(evalf, xf, pf, b, tolrGCR, MaxItersGCR, epsMF):
         
         # Determine the optimal amount to change x in the p direction
         # by projecting r onto Ap
-        alpha = r.T * Ap[k]
+        alpha = r.T @ Ap[k]
         
         # Update x and r
         x = x + alpha *  p[k]
@@ -69,16 +67,14 @@ def tgcr_MatrixFree(evalf, xf, pf, b, tolrGCR, MaxItersGCR, epsMF):
 
         # Save the norm of r
         r_norms.append(np.linalg.norm(r))
+        
+        k = k + 1
 
-        # Print the norm during the iteration
-        # fprintf('||r||=%g i=%d\n', norms(k+1), k+1);
-        
-        if r_norms[k+1] > (tolrGCR * r_norms[1]):
-            print('GCR did NOT converge! Maximum Number of Iterations reached\n')
-        else:
-            print("GCR converged")
-        
-        return x, r_norms/r_norms[0]
+    if r_norms[k] > (tolrGCR * r_norms[0]):
+        print('GCR did NOT converge! Maximum Number of Iterations reached\n')
+    # else:
+    #     print("GCR converged")
+    return x, r_norms/r_norms[0]
     
-
-# %%
+    
+    
