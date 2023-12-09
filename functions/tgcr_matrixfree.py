@@ -35,7 +35,7 @@ def tgcr_MatrixFree(evalf, xf, pf, b, tolrGCR, MaxItersGCR, epsMF):
         p.append(r)
         
         #  The following three lines are an approximation for Ap(:, k) = A * p(:,k);
-        epsilon = 1e-8
+        epsilon = 1e-4
         fepsMF  = evalf(xf+epsilon*p[k],pf)
         f       = evalf(xf,pf)
         Ap.append((fepsMF - f ) / epsilon)
@@ -46,11 +46,11 @@ def tgcr_MatrixFree(evalf, xf, pf, b, tolrGCR, MaxItersGCR, epsMF):
         # you can save computation by limiting the for loop to just j=k-1
         # however if you need relative accuracy better than  1e-10
         # it might be safer to keep full orthogonalization even for symmetric A
-        if k >1:
-            for j in range(1,k):
-                beta = Ap[k].T @ Ap[j]
-                p[k]  =  p[k] - beta @ p[j]
-                Ap[k] = Ap[k] - beta @ Ap[j]
+        if k >0:
+            for j in range(1,k-1):
+                beta = Ap[k].T * Ap[j]
+                p[k]  =  p[k] - beta * p[j]
+                Ap[k] = Ap[k] - beta * Ap[j]
 
             
         # Make the orthogonal Ap vector of unit length, and scale the
@@ -61,7 +61,7 @@ def tgcr_MatrixFree(evalf, xf, pf, b, tolrGCR, MaxItersGCR, epsMF):
         
         # Determine the optimal amount to change x in the p direction
         # by projecting r onto Ap
-        alpha = r.T @ Ap[k]
+        alpha = r.T * Ap[k]
         
         # Update x and r
         x = x + alpha *  p[k]

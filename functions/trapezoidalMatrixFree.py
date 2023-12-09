@@ -42,6 +42,11 @@ def trapezoidalMatrixFree( evalf,x0, deltat, t0, T, p, errf, errDeltax, relDelta
     x_t.append(x0) 
     x_prev = x0 
     t = t0 
+    
+    t = t0
+    t_list =[]
+    t_list.append(t0)
+    count =0
     while t < T:
         x_guess =x_prev
         print("t",t)
@@ -50,14 +55,17 @@ def trapezoidalMatrixFree( evalf,x0, deltat, t0, T, p, errf, errDeltax, relDelta
         
         x_t.append(x_prev)
         x_prev =x_next[:,-1]
-        # print("x_prev.shape",x_prev.shape)
+        print("x_prev.shape",x_prev.shape)
         # print("size of x_next",x_next[-1].shape)
        
-        t = t + deltat 
+        t += deltat
+        t_list.append(t)
+        count = count+1
         
+    print("count",count)
         
      
    
 
-    return x_t
+    return x_t,t_list
 
