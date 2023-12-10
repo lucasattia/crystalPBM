@@ -40,6 +40,6 @@ def visualize(n,L,t_ind, num_scale = 100000, dot_scale=4, alpha=0.7):
     ax.set_title('t='+str(t_ind))
 
     # Show the plot
-    plt.show()
-
+    #plt.show()
+    return fig
 
