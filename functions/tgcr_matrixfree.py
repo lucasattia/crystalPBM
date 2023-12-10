@@ -73,7 +73,7 @@ def tgcr_MatrixFree(evalf, xf, pf, b, tolrGCR, MaxItersGCR, epsMF):
     if r_norms[k] > (tolrGCR * r_norms[0]):
         print('GCR did NOT converge! Maximum Number of Iterations reached\n')
     # else:
-    #     print("GCR converged")
+    #     print("GCR converged in", k, "iterations")
     return x, r_norms/r_norms[0]
     
     
