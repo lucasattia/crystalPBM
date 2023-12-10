@@ -81,7 +81,7 @@ def trapezoidalMatrixFree(evalf,x0, alpha, t0, T, p, errf, errDeltax, relDeltax,
        
         t += dt
         t_list.append(t)
-        print('t:',t)
+        # print('t:',t)
         # count = count+1
         
     # print("count",count)
