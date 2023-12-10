@@ -27,7 +27,7 @@ def expand_params(p):
 
 
 
-def trapezoidalMatrixFree( evalf,x0, deltat, t0, T, p, errf, errDeltax, relDeltax, MaxIter,tolrGCR,epsMF):
+def trapezoidalMatrixFree(evalf,x0, alpha, t0, T, p, errf, errDeltax, relDeltax, MaxIter,tolrGCR,epsMF):
     """ 
     TRAPEZOIDAL Trapezoidal time integration.
       :param str eval_f: f(x, p, u)
@@ -46,23 +46,33 @@ def trapezoidalMatrixFree( evalf,x0, deltat, t0, T, p, errf, errDeltax, relDelta
     t = t0
     t_list =[]
     t_list.append(t0)
-    count =0
+    # count =0
+    
+    # dt = 0.1  # idk try some guess
     while t < T:
         x_guess =x_prev
-        print("t",t)
-        x_next,converged,errf_k,errDeltax_k,relDeltax_k,iterations,X = NewtonGCR(x_guess,evalf,p,errf,errDeltax,relDeltax,MaxIter,tolrGCR,epsMF)
-        print("x_next.shape",x_next.shape)
+        fval = evalf(x_prev, p)
+        
+        # pick dt. Feels like there are lots of different interesting things we can try here.
+        fval_weighted = np.copy(fval)
+        fval_weighted[0] *= 10*np.linalg.norm(fval)  # supersaturation rate of change is really important, give it more weight
+        dt = alpha*np.linalg.norm(x_prev)/np.linalg.norm(fval_weighted)
+        if t + dt > T:
+            dt = T-t
+        
+        f_trap = lambda x_new, _: x_new - x_prev - (dt/2)*(fval + evalf(x_new, p))
+        x_next, converged,errf_k,errDeltax_k,relDeltax_k,iterations,X = NewtonGCR(x_guess, f_trap, p, errf, errDeltax, relDeltax, MaxIter, tolrGCR, epsMF)
+        
         
         x_t.append(x_prev)
         x_prev =x_next[:,-1]
-        print("x_prev.shape",x_prev.shape)
-        # print("size of x_next",x_next[-1].shape)
        
-        t += deltat
+        t += dt
         t_list.append(t)
-        count = count+1
+        print('t:',t)
+        # count = count+1
         
-    print("count",count)
+    # print("count",count)
         
      
    

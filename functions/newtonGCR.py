@@ -37,7 +37,7 @@ def NewtonGCR(x0,evalf,p,errf,errDeltax,relDeltax,MaxIter,tolrGCR,epsMF):
 
     k           = 0                          # Newton iteration index
     X = np.zeros((len(x0),MaxIter+5))
-    print("type(x0)",type(x0))
+    # print("type(x0)",type(x0))
     X[:,k]           = x0
    
     # print("x0 in newtonGCR",x0)
@@ -78,8 +78,8 @@ def NewtonGCR(x0,evalf,p,errf,errDeltax,relDeltax,MaxIter,tolrGCR,epsMF):
  
 
     x = X[:,0:k]   
-    print('final x  size in newton', x.shape)
-    print("type(x), output",type(x))
+    # print('final x  size in newton', x.shape)
+    # print("type(x), output",type(x))
 
     # returning the number of iterations with ACTUAL computation
     # i.e. exclusing the given initial guess
@@ -88,7 +88,7 @@ def NewtonGCR(x0,evalf,p,errf,errDeltax,relDeltax,MaxIter,tolrGCR,epsMF):
 
     if errf_k<=errf and errDeltax_k<=errDeltax and relDeltax_k<=relDeltax :
         converged = 1 
-        print('Newton converged in iterations\n', iterations) 
+        # print('Newton converged in iterations\n', iterations) 
     else:
         converged=0 
         print("errf_k",errf_k)
