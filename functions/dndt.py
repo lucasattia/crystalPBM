@@ -4,6 +4,21 @@ from growthrate import crystal_growth
 from deathrate import crystal_death
 from birthrate import crystal_birth_breakage, crystal_birth_nucleation
 from WENO5 import WENO5_calc
+from findiff import FinDiff
+
+def diff(x, p):
+    npad = 30
+    x = np.concatenate([[x[0]]*npad, x])
+    L_list = p['L_list']
+    dL = L_list[1]-L_list[0]
+    
+    if 'order' not in p.keys() or p['order'] == 'np':
+        dx_dL = np.gradient(x)/dL
+    else:
+        dx_dL = FinDiff(0,dL,1, acc=int(p['order']))(x)
+
+    return dx_dL[npad:]
+
 def calc_dndt(x, params):
     
     """
@@ -32,9 +47,19 @@ def calc_dndt(x, params):
     k_m = 1
     delta_x = dL
     if params['weno']:
-        dGn_dL = WENO5_calc(k_m, G*n, delta_x, eps = 1.0e-40, power=2)
+        dGn_dL = WENO5_calc(k_m, G*n, delta_x, eps = 1.0e-6, power=2)
     else: 
-        dGn_dL = np.gradient(G*n, edge_order=2)/dL 
+        dGn_dL = diff(G*n, params)
+        
+    # wenodiff = WENO5_calc(k_m, G*n, delta_x, eps = 1.0e-6, power=2)
+    # npdiff = diff(G*n, params)
+    # print(np.linalg.norm(wenodiff-npdiff))
+    # print('n:', G*n[:10]/dL)
+    # print('wenodiff:', wenodiff[:10])
+    # print('npdiff: ', npdiff[:10])
+
+        
+        
     B = crystal_birth_nucleation(x, params) + crystal_birth_breakage(n,params)
     D = crystal_death(n, params)
     dlogV_dt = - params['E']/V #assuming constant evaporation

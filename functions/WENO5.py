@@ -62,9 +62,12 @@ def WENO5_calc(k_m, x0, delta_x, eps = 1.0e-40, power=2):
     
     # x0 = np.insert(x0,0,first_nums )
     # x0 = np.insert(x0,len_x0,last_nums)
-    x0 = np.insert(x0,0,np.array([first_num,first_num,first_num]) )
+    # x0 = np.insert(x0,0,np.array([first_num,first_num,first_num]) )
+    # x0 = np.insert(x0,0,np.array([0,0,0]) )
+    x0 = np.concatenate([np.array([0,0,0]), x0])
     len_x0=len(x0)
     x0 = np.insert(x0,len_x0,np.array([last_num,last_num]))
+    # x0 = np.insert(x0,len_x0,np.array([0,0]))
     x_m3, x_m2, x_m1, x_0, x_p1, x_p2 = six_pt_stensil(x0)
    
     x_m3 = k_m * x_m3
