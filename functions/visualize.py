@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-def visualize(n,L,t_ind, num_scale = 100000, dot_scale=4, alpha=0.7):
+def visualize(n,L,t_ind, tlist, num_scale = 100000, dot_scale=4, alpha=0.7):
     # num_samples = 10  # To be replaced with int(n,L)/normalization_factor
     norm_factor = np.trapz(n[-1,:], L)
     num_samples = int(num_scale*np.trapz(n[t_ind,:], L)/norm_factor)
@@ -32,12 +32,12 @@ def visualize(n,L,t_ind, num_scale = 100000, dot_scale=4, alpha=0.7):
 
     # Plot each circle
     
-    ax.set_aspect('equal', adjustable='datalim')
+    #ax.set_aspect('equal', adjustable='datalim')
     ax.set_xlim(x_min, x_max)
     ax.set_ylim(y_min, y_max)
     ax.set_xticks([])
     ax.set_yticks([])
-    ax.set_title('t='+str(t_ind))
+    ax.set_title('t='+str(round(tlist[t_ind],2 )) + ' s')
 
     # Show the plot
     #plt.show()
