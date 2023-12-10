@@ -11,6 +11,7 @@ def visualize(n,L,t_ind, num_scale = 100000, dot_scale=4, alpha=0.7):
     # so let's plot the "upper end" of each bin instead by adding dL to all the lengths
     dL = L[1]
     p = n[t_ind,:]/np.sum(n[t_ind,:])
+    p[p<1e-14] = 0
     p[-1] = 1 - np.sum(p[0:-1])
     L_sampled = dL + np.random.choice(L, num_samples, replace=True, p=p)
     num_circles = len(L_sampled)
