@@ -4,6 +4,7 @@ import numpy as np
 
 from newtonGCR import NewtonGCR
 from deathrate import a
+from trapezoidal import rk_loop
 
 def expand_params(p):
     L_list = p["L_list"]
@@ -50,17 +51,28 @@ def trapezoidalMatrixFree(evalf,x0, alpha, t0, T, p, errf, errDeltax, relDeltax,
     
     # dt = 0.1  # idk try some guess
     while t < T:
-        x_guess =x_prev
         fval = evalf(x_prev, p)
         
         # pick dt. Feels like there are lots of different interesting things we can try here.
-        fval_weighted = np.copy(fval)
-        fval_weighted[0] *= 10*np.linalg.norm(fval)  # supersaturation rate of change is really important, give it more weight
-        dt = alpha*np.linalg.norm(x_prev)/np.linalg.norm(fval_weighted)
+        # fval_weighted = np.copy(fval)
+        # fval_weighted[0] *= 5*np.linalg.norm(x_prev)  # supersaturation rate of change is really important, give it more weight
+        # dt = alpha*np.linalg.norm(x_prev)/np.linalg.norm(fval_weighted)
+        
+        # let's look at the maximum normalized rate of change of any component
+        normalized_derivative = fval/(x_prev + alpha[0])
+        max_derivative = np.nanmax(normalized_derivative)
+        dt = alpha[1]/max_derivative
+        dt = np.min([dt, alpha[2]])
+        # dt = alpha/np.nanmax(np.abs(fval/(x_prev + 0.1)))
+        
+        # dt = 0.5
         if t + dt > T:
             dt = T-t
-        
+            
+
         f_trap = lambda x_new, _: x_new - x_prev - (dt/2)*(fval + evalf(x_new, p))
+        x_guess = x_prev + dt*fval
+        # x_guess = rk_loop(x_prev, dt, p)
         x_next, converged,errf_k,errDeltax_k,relDeltax_k,iterations,X = NewtonGCR(x_guess, f_trap, p, errf, errDeltax, relDeltax, MaxIter, tolrGCR, epsMF)
         
         
