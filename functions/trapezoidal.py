@@ -64,6 +64,7 @@ def rk_integrator(x0, t_vec, p):
     # assuming constant delta_t
     dt = (t_vec[1] - t_vec[0])
     for i in tqdm(range(len(t_vec))):
+    # for i in range(len(t_vec)):
         x_vec[i] = rk_loop(x_prev, dt, p)
         x_prev = x_vec[i]
     return x_vec
