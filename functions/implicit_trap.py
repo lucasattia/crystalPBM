@@ -33,7 +33,16 @@ def trapezoidal(f, x0, t_start, t_end, alpha, jf, e_f, e_delta_x, e_x_rel, maxit
     t_list.append(t_start)
     while  time < t_end:
         fval = f(x_prev)
-        dt = alpha/np.linalg.norm(fval)
+        # dt = alpha/np.linalg.norm(fval)
+        
+        # let's look at the maximum normalized rate of change of any component
+        normalized_derivative = np.abs(fval/(x_prev + alpha[0]))
+        max_derivative = np.nanmax(normalized_derivative)
+        dt = alpha[1]/max_derivative
+        dt = np.min([dt, alpha[2]])
+        if time + dt > t_end:
+            dt = t_end-time
+        
         time += dt
         t_list.append(time)
         trap = lambda x_new: x_new - x_prev - (dt/2)*(fval + f(x_new))

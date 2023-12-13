@@ -59,7 +59,7 @@ def trapezoidalMatrixFree(evalf,x0, alpha, t0, T, p, errf, errDeltax, relDeltax,
         # dt = alpha*np.linalg.norm(x_prev)/np.linalg.norm(fval_weighted)
         
         # let's look at the maximum normalized rate of change of any component
-        normalized_derivative = fval/(x_prev + alpha[0])
+        normalized_derivative = np.abs(fval/(x_prev + alpha[0]))
         max_derivative = np.nanmax(normalized_derivative)
         dt = alpha[1]/max_derivative
         dt = np.min([dt, alpha[2]])
